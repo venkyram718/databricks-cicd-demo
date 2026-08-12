@@ -1,8 +1,11 @@
-﻿def calculate_revenue(price, quantity):
+﻿# Databricks notebook source
+# COMMAND ----------
+def calculate_revenue(price, quantity):
     if price < 0 or quantity < 0:
         raise ValueError("Price and quantity must be non-negative")
     return price * quantity
 
+# COMMAND ----------
 data = [
     {"product": "Widget A", "price": 10.0, "quantity": 100},
     {"product": "Widget B", "price": 25.0, "quantity": 50},
