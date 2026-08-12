@@ -32,11 +32,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Databricks CLI
-        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-      - name: Deploy bundle to dev
+      - name: Install Databricks CLI
+        run: pip install databricks-cli
+
+      - name: Deploy notebook to Databricks
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: databricks bundle deploy --target dev
+        run: |
+          databricks workspace mkdirs /Shared/cicd-demo
+          databricks workspace import notebooks/transform_data.py /Shared/cicd-demo/transform_data --language PYTHON --overwrite
+          echo "Notebook deployed successfully"
+
+      - name: Verify deployment
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks workspace ls /Shared/cicd-demo
+          echo "Deployment verified"
