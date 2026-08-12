@@ -1,0 +1,31 @@
+﻿bundle:
+  name: databricks-cicd-demo
+
+workspace:
+  host: https://dbc-8fede5ac-7d5d.cloud.databricks.com
+
+resources:
+  jobs:
+    transform_job:
+      name: Transform Data Job
+      tasks:
+        - task_key: run_notebook
+          notebook_task:
+            notebook_path: ./notebooks/transform_data.py
+            source: WORKSPACE
+          new_cluster:
+            spark_version: 13.3.x-scala2.12
+            node_type_id: m5d.large
+            num_workers: 1
+            autotermination_minutes: 10
+
+targets:
+  dev:
+    mode: development
+    workspace:
+      root_path: /Users/venkyram718@gmail.com/.bundle/dev
+
+  prod:
+    mode: production
+    workspace:
+      root_path: /Shared/.bundle/prod
